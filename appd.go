@@ -110,8 +110,39 @@ func SetControllerUseSSL(ssl byte) {
     C.cfg.controller.use_ssl = C.char(ssl)
 }
 
-// Proxy stuff to be added later
-// Windows stuff to be added later
+// Proxy
+func SetControllerProxyHost(host string) {
+    C.cfg.controller.http_proxy.host = C.CString(host)
+}
+
+func SetControllerProxyPort(port int16) {
+    C.cfg.controller.http_proxy.port = C.ushort(port)
+}
+
+func SetControllerProxyUsername(username string) {
+    C.cfg.controller.http_proxy.username = C.CString(username)
+}
+
+func SetControllerProxyPasswordFile(password_file string) {
+    C.cfg.controller.http_proxy.password_file = C.CString(password_file)
+}
+
+// Agent
+func SetAgentProxyControlPort(port int16) {
+    C.cfg.agent_proxy.tcp_control_port = C.ushort(port)
+}
+
+func SetAgentProxyRequestPort(port int16) {
+    C.cfg.agent_proxy.tcp_request_port = C.ushort(port)
+}
+
+func SetAgentProxyReportingPort(port int16) {
+    C.cfg.agent_proxy.tcp_reporting_port = C.ushort(port)
+}
+
+func SetAgentProxyCommDir(dir string) {
+    C.cfg.agent_proxy.ipc_comm_dir = C.CString(dir)
+}
 
 func SetInitTimeout(timeout int) {
     C.cfg.init_timeout_ms = C.int(timeout)
@@ -171,6 +202,22 @@ func BT_add_error(bt uint64, level uint32, message string, mark_bt_as_error int)
     defer C.free(unsafe.Pointer(message_c))
 
     C.appd_bt_add_error(C.bt_int_to_handle(C.uintptr_t(bt)), level, message_c, C.int(mark_bt_as_error))
+}
+
+func BT_store(bt uint64, guid string) {
+    guid_c := C.CString(guid)
+    defer C.free(unsafe.Pointer(guid_c))
+
+    C.appd_bt_store(C.bt_int_to_handle(C.uintptr_t(bt)), guid_c)
+}
+
+func BT_get(guid string) uint64 {
+    guid_c := C.CString(guid)
+    defer C.free(unsafe.Pointer(guid_c))
+
+    bt := C.appd_bt_get(guid_c)
+
+    return uint64(C.bt_handle_to_int(bt))
 }
 
 /*
@@ -268,6 +315,22 @@ func Exitcall_add_error(exit uint64, error_level uint32, message string, mark_bt
 func Exitcall_get_correlation_header(exit uint64) string {
     header := C.appd_exitcall_get_correlation_header(C.exit_int_to_handle(C.uintptr_t(exit)))
     return C.GoString(header)
+}
+
+func Exitcall_store(exit uint64, guid string) {
+    guid_c := C.CString(guid)
+    defer C.free(unsafe.Pointer(guid_c))
+
+    C.appd_exitcall_store(C.exit_int_to_handle(C.uintptr_t(exit)), guid_c)
+}
+
+func Exitcall_get(guid string) uint64 {
+    guid_c := C.CString(guid)
+    defer C.free(unsafe.Pointer(guid_c))
+
+    exit := C.appd_exitcall_get(guid_c)
+
+    return uint64(C.exit_handle_to_int(exit))
 }
 
 /*
