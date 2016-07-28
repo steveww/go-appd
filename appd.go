@@ -1,8 +1,8 @@
 package appd
 
 /*
-#cgo CFLAGS: -I /home/stevew/AppDynamics/appdynamics-sdk-native/sdk_lib
-#cgo LDFLAGS: -L /home/stevew/AppDynamics/appdynamics-sdk-native/sdk_lib/lib -lappdynamics_native_sdk
+#cgo CFLAGS: -I ${APPD_SDK_HOME}
+#cgo LDFLAGS: -L ${APPD_SDK_HOME}/lib -lappdynamics_native_sdk
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
